@@ -3,196 +3,140 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>✨</title>
+<title>Твой подарок</title>
 
 <style>
 html, body {
     margin: 0;
     padding: 0;
     height: 100%;
-    background: linear-gradient(
-    	180deg,
-    	#1a1f2b 0%,
-    	#232946 50%,
-    	#1b1f33 100%
-    );
-    color: #ffffff;
-    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(180deg, #1e1b2e, #3a2f5c, #5a3f6b);
+    overflow: hidden;
+    color: #fff;
     text-align: center;
 }
 
-.container {
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
-}
-
-.step {
-    display: none;
-    width: 100%;
-    max-width: 320px;
-    animation: fade 0.6s ease;
-}
-
-.step.active {
-    display: block;
-}
-
-@keyframes fade {
-    from { opacity: 0; transform: translateY(10px); }
-    to   { opacity: 1; transform: translateY(0); }
-}
-
-.stage {
-    font-size: 14px;
-    opacity: 0.7;
-    margin-bottom: 12px;
-}
-
-input {
-    width: 100%;
-    padding: 14px;
+/* Кнопка запуска */
+#startMusic {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(255,255,255,0.9);
+    border: none;
+    padding: 16px 28px;
     font-size: 18px;
-    border-radius: 14px;
-    border: none;
-    outline: none;
-    text-align: center;
-}
-
-button {
-    width: 100%;
-    margin-top: 16px;
-    padding: 14px;
-    font-size: 16px;
-    border-radius: 14px;
-    border: none;
-    background: #ffffff;
-    color: #000000;
-}
-
-.reset {
-    margin-top: 18px;
-    font-size: 13px;
-    opacity: 0.6;
+    border-radius: 30px;
     cursor: pointer;
+    z-index: 10;
 }
 
-.error {
-    margin-top: 12px;
-    min-height: 18px;
-    font-size: 14px;
-    color: #ff8a8a;
+/* Контейнер текста */
+#text {
+    max-width: 90%;
+    margin: auto;
+    padding-top: 20vh;
+    font-size: 18px;
+    line-height: 1.6;
+    display: none;
 }
 
-.find {
-    font-size: 22px;
-    letter-spacing: 2px;
-    animation: fade 2s ease;
+/* Снег и сердечки */
+.snowflake {
+    position: fixed;
+    top: -10px;
+    color: white;
+    user-select: none;
+    pointer-events: none;
+    animation: fall linear infinite;
+    opacity: 0.8;
+}
+
+.heart {
+    color: #ff7aa2;
+    opacity: 0.7;
+}
+
+@keyframes fall {
+    to {
+        transform: translateY(110vh);
+    }
 }
 </style>
 </head>
 
 <body>
 
-<div class="container">
+<button id="startMusic">Включить музыку</button>
 
-    <div class="step" id="step1">
-        <div class="stage">Этап 1 из 5</div>
-        <input placeholder="Введите ответ">
-        <button onclick="check(1)">Продолжить</button>
-        <div class="error"></div>
-        <div class="reset" onclick="resetQuest()">Начать заново</div>
-    </div>
+<audio id="bgMusic" loop>
+    <source src="music.mp3" type="audio/mpeg">
+</audio>
 
-    <div class="step" id="step2">
-        <div class="stage">Этап 2 из 5</div>
-        <input placeholder="Введите ответ">
-        <button onclick="check(2)">Продолжить</button>
-        <div class="error"></div>
-        <div class="reset" onclick="resetQuest()">Начать заново</div>
-    </div>
-
-    <div class="step" id="step3">
-        <div class="stage">Этап 3 из 5</div>
-        <input placeholder="Введите ответ">
-        <button onclick="check(3)">Продолжить</button>
-        <div class="error"></div>
-        <div class="reset" onclick="resetQuest()">Начать заново</div>
-    </div>
-
-    <div class="step" id="step4">
-        <div class="stage">Этап 4 из 5</div>
-        <input placeholder="Введите ответ">
-        <button onclick="check(4)">Продолжить</button>
-        <div class="error"></div>
-        <div class="reset" onclick="resetQuest()">Начать заново</div>
-    </div>
-
-    <div class="step" id="step5">
-        <div class="stage">Этап 5 из 5</div>
-        <input placeholder="Введите ответ">
-        <button onclick="check(5)">Продолжить</button>
-        <div class="error"></div>
-        <div class="reset" onclick="resetQuest()">Начать заново</div>
-    </div>
-
-    <div class="step" id="end">
-        <div class="find">Найди меня</div>
-        <div class="reset" onclick="resetQuest()">Начать заново</div>
-    </div>
-
-</div>
+<div id="text"></div>
 
 <script>
-const answers = {
-    1: ["диван"],
-    2: ["кровать"],
-    3: ["дверь"],
-    4: ["туалет"],
-    5: ["стол"]
-};
+const button = document.getElementById("startMusic");
+const music = document.getElementById("bgMusic");
+const textBlock = document.getElementById("text");
 
-const storageKey = "quest_step";
+const lines = [
+    "Ты нашла его....",
+    "Твой подарок!",
+    "",
+    "Хочу, чтобы этот новый год стал для тебя незабываемым,",
+    "поводом на смелые и интересные шаги.",
+    "",
+    "Я всегда верил, верю и буду верить в тебя,",
+    "как всегда любил, люблю и буду любить :)",
+    "",
+    "Всё, чтобы ты не загадала в этом году,",
+    "обязательно сбудется,",
+    "а я буду рядышком",
+    "и прослежу за твоими гордыми шагами.",
+    "",
+    "С Новым Годом, любимая! 🎄❤️"
+];
 
-function normalize(text) {
-    return text.toLowerCase().replace(/\s+/g, "").replace(/ё/g, "е");
-}
+button.addEventListener("click", () => {
+    music.volume = 0.4;
+    music.play();
+    button.style.display = "none";
+    textBlock.style.display = "block";
+    showText();
+    startSnow();
+});
 
-function showStep(step) {
-    document.querySelectorAll(".step").forEach(s => s.classList.remove("active"));
-    document.getElementById(step).classList.add("active");
-}
-
-function check(step) {
-    const block = document.getElementById("step" + step);
-    const input = block.querySelector("input");
-    const error = block.querySelector(".error");
-
-    if (answers[step].includes(normalize(input.value))) {
-        if (navigator.vibrate) navigator.vibrate(30);
-        localStorage.setItem(storageKey, step + 1);
-
-        if (step < 5) {
-            showStep("step" + (step + 1));
+function showText() {
+    let i = 0;
+    const interval = setInterval(() => {
+        if (i < lines.length) {
+            const p = document.createElement("p");
+            p.textContent = lines[i];
+            textBlock.appendChild(p);
+            i++;
         } else {
-            showStep("end");
+            clearInterval(interval);
         }
-    } else {
-        error.textContent = "Попробуй ещё раз";
-    }
+    }, 1800);
 }
 
-function resetQuest() {
-    localStorage.removeItem(storageKey);
-    showStep("step1");
-}
+function startSnow() {
+    setInterval(() => {
+        const el = document.createElement("div");
+        const isHeart = Math.random() > 0.75;
+        el.className = "snowflake" + (isHeart ? " heart" : "");
+        el.textContent = isHeart ? "❤" : "❄";
+        el.style.left = Math.random() * 100 + "vw";
+        el.style.fontSize = (Math.random() * 10 + 12) + "px";
+        el.style.animationDuration = (Math.random() * 5 + 6) + "s";
+        document.body.appendChild(el);
 
-const saved = parseInt(localStorage.getItem(storageKey)) || 1;
-showStep(saved > 5 ? "end" : "step" + saved);
+        setTimeout(() => el.remove(), 12000);
+    }, 350);
+}
 </script>
 
 </body>
 </html>
-
