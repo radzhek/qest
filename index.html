@@ -3,138 +3,158 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Твой подарок</title>
+<title>Квест</title>
 
 <style>
 html, body {
     margin: 0;
     padding: 0;
     height: 100%;
-    font-family: 'Arial', sans-serif;
-    background: linear-gradient(180deg, #1e1b2e, #3a2f5c, #5a3f6b);
-    overflow: hidden;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(180deg, #2b2d4a, #4b3c6b, #6b4c7a);
     color: #fff;
     text-align: center;
 }
 
-/* Кнопка запуска */
-#startMusic {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: rgba(255,255,255,0.9);
-    border: none;
-    padding: 16px 28px;
-    font-size: 18px;
-    border-radius: 30px;
-    cursor: pointer;
-    z-index: 10;
-}
-
-/* Контейнер текста */
-#text {
+.container {
     max-width: 90%;
     margin: auto;
     padding-top: 20vh;
-    font-size: 18px;
-    line-height: 1.6;
+}
+
+.step {
     display: none;
 }
 
-/* Снег и сердечки */
-.snowflake {
-    position: fixed;
-    top: -10px;
-    color: white;
-    user-select: none;
-    pointer-events: none;
-    animation: fall linear infinite;
-    opacity: 0.8;
+h1 {
+    font-size: 22px;
+    margin-bottom: 10px;
 }
 
-.heart {
-    color: #ff7aa2;
+p {
+    font-size: 18px;
+    margin-bottom: 20px;
+}
+
+input {
+    width: 80%;
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 8px;
+    border: none;
+    margin-bottom: 15px;
+}
+
+button {
+    padding: 12px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 20px;
+    background: rgba(255,255,255,0.9);
+    cursor: pointer;
+}
+
+.reset {
+    margin-top: 30px;
+    font-size: 14px;
     opacity: 0.7;
+    cursor: pointer;
 }
 
-@keyframes fall {
-    to {
-        transform: translateY(110vh);
-    }
+.find {
+    font-size: 28px;
+    margin-bottom: 30px;
 }
 </style>
 </head>
 
 <body>
 
-<button id="startMusic">Включить музыку</button>
+<div class="container">
 
-<audio id="bgMusic" loop>
-    <source src="music.mp3" type="audio/mpeg">
-</audio>
+    <!-- ЭТАП 1 -->
+    <div class="step" id="step1">
+        <h1>Этап 1 из 5</h1>
+        <p>Введи ответ</p>
+        <input id="input1">
+        <button onclick="check(1, 'диван')">Продолжить</button>
+        <div class="reset" onclick="resetQuest()">Начать заново</div>
+    </div>
 
-<div id="text"></div>
+    <!-- ЭТАП 2 -->
+    <div class="step" id="step2">
+        <h1>Этап 2 из 5</h1>
+        <p>Введи ответ</p>
+        <input id="input2">
+        <button onclick="check(2, 'кровать')">Продолжить</button>
+        <div class="reset" onclick="resetQuest()">Начать заново</div>
+    </div>
+
+    <!-- ЭТАП 3 -->
+    <div class="step" id="step3">
+        <h1>Этап 3 из 5</h1>
+        <p>Введи ответ</p>
+        <input id="input3">
+        <button onclick="check(3, 'дверь')">Продолжить</button>
+        <div class="reset" onclick="resetQuest()">Начать заново</div>
+    </div>
+
+    <!-- ЭТАП 4 -->
+    <div class="step" id="step4">
+        <h1>Этап 4 из 5</h1>
+        <p>Введи ответ</p>
+        <input id="input4">
+        <button onclick="check(4, 'туалет')">Продолжить</button>
+        <div class="reset" onclick="resetQuest()">Начать заново</div>
+    </div>
+
+    <!-- ЭТАП 5 -->
+    <div class="step" id="step5">
+        <h1>Этап 5 из 5</h1>
+        <p>Введи ответ</p>
+        <input id="input5">
+        <button onclick="check(5, 'стол')">Продолжить</button>
+        <div class="reset" onclick="resetQuest()">Начать заново</div>
+    </div>
+
+    <!-- ФИНАЛ -->
+    <div class="step" id="end">
+        <div class="find">Найди меня</div>
+        <div class="reset" onclick="resetQuest()">Начать заново</div>
+    </div>
+
+</div>
 
 <script>
-const button = document.getElementById("startMusic");
-const music = document.getElementById("bgMusic");
-const textBlock = document.getElementById("text");
+const storageKey = "quest_step";
 
-const lines = [
-    "Ты нашла его....",
-    "Твой подарок!",
-    "",
-    "Хочу, чтобы этот новый год стал для тебя незабываемым,",
-    "поводом на смелые и интересные шаги.",
-    "",
-    "Я всегда верил, верю и буду верить в тебя,",
-    "как всегда любил, люблю и буду любить :)",
-    "",
-    "Всё, чтобы ты не загадала в этом году,",
-    "обязательно сбудется,",
-    "а я буду рядышком",
-    "и прослежу за твоими гордыми шагами.",
-    "",
-    "С Новым Годом, любимая! 🎄❤️"
-];
-
-button.addEventListener("click", () => {
-    music.volume = 0.4;
-    music.play();
-    button.style.display = "none";
-    textBlock.style.display = "block";
-    showText();
-    startSnow();
-});
-
-function showText() {
-    let i = 0;
-    const interval = setInterval(() => {
-        if (i < lines.length) {
-            const p = document.createElement("p");
-            p.textContent = lines[i];
-            textBlock.appendChild(p);
-            i++;
-        } else {
-            clearInterval(interval);
-        }
-    }, 1800);
+if (new URLSearchParams(window.location.search).get("reset")) {
+    localStorage.removeItem(storageKey);
+    history.replaceState({}, document.title, window.location.pathname);
 }
 
-function startSnow() {
-    setInterval(() => {
-        const el = document.createElement("div");
-        const isHeart = Math.random() > 0.75;
-        el.className = "snowflake" + (isHeart ? " heart" : "");
-        el.textContent = isHeart ? "❤" : "❄";
-        el.style.left = Math.random() * 100 + "vw";
-        el.style.fontSize = (Math.random() * 10 + 12) + "px";
-        el.style.animationDuration = (Math.random() * 5 + 6) + "s";
-        document.body.appendChild(el);
+const currentStep = localStorage.getItem(storageKey) || "step1";
+showStep(currentStep);
 
-        setTimeout(() => el.remove(), 12000);
-    }, 350);
+function showStep(id) {
+    document.querySelectorAll(".step").forEach(s => s.style.display = "none");
+    document.getElementById(id).style.display = "block";
+}
+
+function check(step, answer) {
+    const input = document.getElementById("input" + step).value.trim().toLowerCase();
+    if (input === answer) {
+        const next = step === 5 ? "end" : "step" + (step + 1);
+        localStorage.setItem(storageKey, next);
+        showStep(next);
+    } else {
+        alert("Попробуй ещё раз 💭");
+    }
+}
+
+function resetQuest() {
+    localStorage.removeItem(storageKey);
+    showStep("step1");
 }
 </script>
 
