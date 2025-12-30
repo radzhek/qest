@@ -12,21 +12,21 @@ html, body {
     height: 100%;
     font-family: 'Arial', sans-serif;
     background: linear-gradient(180deg, #1e1b2e, #3a2f5c, #5a3f6b);
-    overflow: hidden;
     color: #fff;
     text-align: center;
+    overflow: hidden;
 }
 
 /* Кнопка запуска */
 #startMusic {
-    position: fixed;
+    position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     background: rgba(255,255,255,0.9);
     border: none;
-    padding: 16px 28px;
-    font-size: 18px;
+    padding: 14px 26px;
+    font-size: 17px;
     border-radius: 30px;
     cursor: pointer;
     z-index: 10;
@@ -34,12 +34,19 @@ html, body {
 
 /* Контейнер текста */
 #text {
-    max-width: 90%;
-    margin: auto;
-    padding-top: 20vh;
-    font-size: 18px;
-    line-height: 1.6;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90%;
+    font-size: 15px;
+    line-height: 1.35;
     display: none;
+}
+
+/* Отдельные строки */
+#text p {
+    margin: 6px 0;
 }
 
 /* Снег и сердечки */
@@ -82,19 +89,24 @@ const music = document.getElementById("bgMusic");
 const textBlock = document.getElementById("text");
 
 const lines = [
-    "Ты нашла его....",
+    "Ты нашла его…",
     "Твой подарок!",
     "",
-    "Хочу, чтобы этот новый год стал для тебя незабываемым,",
+    "Хочу, чтобы этот новый год",
+    "стал для тебя незабываемым,",
     "поводом на смелые и интересные шаги.",
     "",
-    "Я всегда верил, верю и буду верить в тебя,",
-    "как всегда любил, люблю и буду любить :)",
+    "Я всегда верил, верю",
+    "и буду верить в тебя,",
+    "как всегда любил, люблю",
+    "и буду любить :)",
     "",
-    "Всё, чтобы ты не загадала в этом году,",
-    "обязательно сбудется,",
-    "а я буду рядышком",
-    "и прослежу за твоими гордыми шагами.",
+    "Всё, что ты загадаешь в этом году,",
+    "обязательно сбудется.",
+    "",
+    "А я буду рядышком",
+    "и прослежу за твоими",
+    "гордыми шагами.",
     "",
     "С Новым Годом, любимая! 🎄❤️"
 ];
@@ -119,7 +131,7 @@ function showText() {
         } else {
             clearInterval(interval);
         }
-    }, 1800);
+    }, 1300);
 }
 
 function startSnow() {
@@ -129,12 +141,12 @@ function startSnow() {
         el.className = "snowflake" + (isHeart ? " heart" : "");
         el.textContent = isHeart ? "❤" : "❄";
         el.style.left = Math.random() * 100 + "vw";
-        el.style.fontSize = (Math.random() * 10 + 12) + "px";
+        el.style.fontSize = (Math.random() * 8 + 10) + "px";
         el.style.animationDuration = (Math.random() * 5 + 6) + "s";
         document.body.appendChild(el);
 
         setTimeout(() => el.remove(), 12000);
-    }, 350);
+    }, 400);
 }
 </script>
 
